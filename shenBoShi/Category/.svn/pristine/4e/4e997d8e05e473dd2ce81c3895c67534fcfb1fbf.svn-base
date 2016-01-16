@@ -1,0 +1,195 @@
+//
+//  NSString+Extension.m
+//  GSUser
+//
+//  Created by greenstone on 14-12-20.
+//  Copyright (c) 2014年 greenStone. All rights reserved.
+//
+
+#import "EMMessage+Extension.h"
+#import "LSLawyerJsonAnalysis.h"
+#import "GSGroupManager.h"
+#import "UserContext.h"
+
+@implementation EMMessage (Extension)
+
+-(bool)getIsSender
+{
+    
+//    NSDictionary *userInfo = [[EaseMob sharedInstance].chatManager loginInfo];
+    NSString *login = [UserContext current].hUid;
+//    NSString *login = [userInfo objectForKey:kSDKUsername];
+    bool isSender = [login isEqualToString:self.groupSenderName] ? true : false;
+    
+    if (!isSender) {
+        unichar c = [self.from characterAtIndex:0];
+        if (c == 'e' || c == 'u') {
+            NSString *from=[self.ext objectForKey:@"f"];
+            if (from.length<=0) {
+                from=self.from;
+            }
+            isSender = [login isEqualToString:from] ? true : false;
+        }
+    }
+    
+    if (self.ext != nil) {
+        NSString *from = [self.ext objectForKey:@"f"];
+        if (from!=nil) {
+            if ([login isEqualToString:from]) {
+                isSender = true;
+            }
+        }
+    }
+    
+    return isSender;
+}
+
+
+
+-(NSString*)getDisplayFrom
+{
+    NSString* displayName = self.groupSenderName;
+    if (self.ext != nil) {
+        displayName = [self.ext objectForKey:@"nm"];
+    }
+    
+    NSString *from = [self getRealFrom];
+    
+    NSString *notename = [[GSGroupManager sharedInstance] getMemberName:from];
+    if (notename != nil) {
+        return  notename;
+    }
+    
+    return displayName;
+}
+
+-(int)getType
+{
+    if (self.ext == nil || self.ext.count == 0) {
+        return 0;
+    }
+    
+    if ([self.ext objectForKey:@"mt"] == nil) {
+        return 0;
+    }
+    
+    return [[self.ext objectForKey:@"mt"] intValue];
+}
+
+-(BOOL)isImageMessage
+{
+    if ([self getType] != 1) {
+        return false;
+    }
+    
+    NSString *on = [self.ext objectForKey:@"on"];
+    UIImage *image = [self.ext objectForKey:@"imageData"];
+    if (on == nil && image == nil) {
+        return false;
+    }
+    
+    NSString *mime = [self.ext objectForKey:@"mm"];
+    
+    if ([mime isEqualToString:@"image/png"]) {
+        return true;
+    }
+    
+    if ([mime isEqualToString:@"image/jpeg"]) {
+        return true;
+    }
+
+    return false;
+}
+
+-(BOOL)isVoiceMessage
+{
+    return [self getType] == 12;
+}
+
+
+
+-(NSString *)getDisplayText
+{
+    NSString *txt = nil;
+    if (self.messageBodies.count>0) {
+        if ([[self.messageBodies objectAtIndex:0] isKindOfClass:[EMTextMessageBody class]])
+        {
+            EMTextMessageBody *body = [self.messageBodies objectAtIndex:0];
+            txt = body.text;
+        }
+        else if ([[self.messageBodies objectAtIndex:0] isKindOfClass:[EMVoiceMessageBody class]])
+        {
+            txt = @"[语音]";
+        }
+    }
+    
+    if (txt == nil || [txt isEqualToString:@""]) {
+        if (self.ext != nil && self.ext.count>0) {
+            if ([self.ext objectForKey:@"mt"] != nil) {
+                int messageType = [[self.ext objectForKey:@"mt"] intValue];
+                switch (messageType) {
+                    case 1:
+                        txt = @"[文件传输]";
+                        break;
+                    case 2:
+                        txt = @"[邀请审阅]";
+                        break;
+                    case 3:
+                        txt = @"[邀请审阅]";
+                        break;
+                    case 8:
+                        txt = @"[其他服务]";
+                    default:
+                        txt = nil;
+                        break;
+                }
+                
+                if (messageType == 20) {
+                    
+                    int nt = [[self.ext objectForKey:@"nt"] intValue];
+                    NSString *uri = [self getRealFrom];
+                    NSString *username = [[GSGroupManager sharedInstance] getMemberName:uri];
+                    
+                    if (nt == 1) {
+
+                        txt = [NSString stringWithFormat:@"%@创建群组",username];
+                    }
+                    else if (nt == 2)
+                    {
+                        NSString *quitUri = [self.ext objectForKey:@"uri"];
+                        if (quitUri != nil) {
+                                NSString *quitUsername = [[GSGroupManager sharedInstance] getMemberName:quitUri];
+                                txt = [NSString stringWithFormat:@"%@退出群组",quitUsername];
+                        }
+                    }
+                    else if(nt == 3)
+                    {
+                        NSString *serviceName = [self.ext objectForKey:@"sn"];
+                        txt = [NSString stringWithFormat:@"%@购买了%@",username,serviceName];
+                    }
+                }
+            }
+        }
+    }
+    
+    return txt;
+}
+
+-(NSString*)getRealFrom
+{
+    if (self.ext!=nil) {
+        NSString *from = [self.ext objectForKey:@"f"];
+        if (from!= nil) {
+            return from;
+        }
+    }
+    
+    unichar c = [self.from characterAtIndex:0];
+    if (c == 'e' || c == 'u') {
+        return self.from;
+    }
+    
+    return self.groupSenderName;
+}
+
+@end

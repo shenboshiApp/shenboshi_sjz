@@ -1,0 +1,106 @@
+//
+//  AspectsViewController.m
+//  GreenStoneUser
+//
+//  Created by 志强刁 on 15/5/5.
+//  Copyright (c) 2015年 greenStone. All rights reserved.
+//
+
+#import "AspectsBase.h"
+#import "Aspects.h"
+#import "HUDHelper.h"
+@implementation AspectsBase
++ (void)load
+{
+    /* + (void)load 会在应用启动的时候自动被runtime调用，通过重载这个方法来实现最小的对业务方的“代码入侵” */
+    [super load];
+    [AspectsBase sharedInstance];
+}
+
+/*
+ 
+ 按道理来说，这个sharedInstance单例方法是可以放在头文件的，但是对于目前这个应用来说，暂时还没有放出去的必要
+ 
+ 当业务方对这个单例产生配置需求的时候，就可以把这个函数放出去
+ */
++ (instancetype)sharedInstance
+{
+    static dispatch_once_t onceToken;
+    static AspectsBase *sharedInstance;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[AspectsBase alloc] init];
+    });
+    return sharedInstance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        
+        /* 在这里做好方法拦截 */
+        [UIViewController aspect_hookSelector:@selector(viewDidLoad) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo>aspectInfo){
+            [self bindEvents:aspectInfo.instance];
+        } error:NULL];
+        
+        [UIViewController aspect_hookSelector:@selector(viewWillDisappear:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, BOOL animated){
+            [self unBindEvents];
+        } error:NULL];
+        
+
+        [UIAlertView aspect_hookSelector:@selector(show) withOptions:AspectPositionBefore usingBlock:^(id<AspectInfo> aspectInfo){
+            [self beforeShowAlertView:aspectInfo.instance];
+        } error:nil];
+        [UINavigationController aspect_hookSelector:@selector(pushViewController:animated:) withOptions:AspectPositionBefore usingBlock:^(id<AspectInfo> aspectInfo){
+            
+            [self beforePush:aspectInfo.instance args:aspectInfo.arguments];} error:nil];
+    }
+    return self;
+}
+
+-(void)beforeShowAlertView:(UIAlertView*)alertView
+{
+    if (self.currentAlertView != nil) {
+        [self.currentAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+    self.currentAlertView = alertView;
+}
+
+
+-(void)beforePush:(UINavigationController *)vc
+            args:(NSArray*)args
+{
+    UIViewController *targetController = (UIViewController *)[args objectAtIndex:0];
+    
+//    [vc pushViewController:<#(UIViewController *)#> animated:<#(BOOL)#>]
+
+    
+    if([vc.topViewController isKindOfClass:[targetController class]])
+    {
+//        targetController=[[UINavigationController alloc]init];
+//
+        NSMutableArray *array = [NSMutableArray arrayWithArray:vc.viewControllers];
+        [array removeObjectAtIndex:array.count-1];
+        vc.viewControllers = array;
+        
+        return;
+    }
+}
+//bindEvents/unBindEvents
+-(void)bindEvents:(id)sender
+{
+}
+
+-(void)unBindEvents
+{
+//    if (self.currentAlertView != nil) {
+//        [self.currentAlertView dismissWithClickedButtonIndex:0 animated:YES];
+//        
+//    }
+
+    
+}
+
+
+
+@end

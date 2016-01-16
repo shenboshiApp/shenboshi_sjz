@@ -1,0 +1,38 @@
+
+//
+//  shenBoShi-Prefix.pch
+//  shenBoShi
+//
+//  Created by 开发3 on 15/12/24.
+//  Copyright © 2015年 开发3-lyp. All rights reserved.
+//
+
+#ifndef shenBoShi_Prefix_pch
+#define shenBoShi_Prefix_pch
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "MJRefresh.h"
+#import "MBProgressHUD.h"
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+//用来获取当前屏幕的高度
+#define KDEVICEHEIGHT ([UIScreen mainScreen].bounds.size.height)
+#define KDEVICEWIDTH ([UIScreen mainScreen].bounds.size.width)
+#define A_WIDTH ([UIScreen mainScreen].bounds.size.width/320)
+#define B_HIGHT ([UIScreen mainScreen].bounds.size.height/568)
+//获取设备的物理高度
+#define ScreenHeight [UIScreen mainScreen ].bounds.size.height
+//获取设备的物理宽度
+#define ScreenWidth [UIScreen mainScreen].bounds.size.width
+//颜色
+#define RGB(R,G,B,A) [UIColor colorWithRed:(R) / 255.0f green:(G) / 255.0f blue:(B) / 255.0f alpha:(A)]
+//系统版本
+#define SYSTEMVERSION float system_version =  [[[UIDevice currentDevice] systemVersion] floatValue];
+#define LightBlueColor ([UIColor colorWithRed:7.0/255.0 green:161/255.0 blue:243.0/225.0 alpha:1])
+#define HightBlueColor ([UIColor colorWithRed:7.0/255.0 green:161/255.0 blue:254.0/225.0 alpha:1])
+#define BackBlueColor ([UIColor colorWithRed:56.0/255.0 green:169.0/255.0 blue:219.0/225.0 alpha:1])
+
+#define LabelTextColor [UIColor colorWithRed:52.0/255.0 green:52.0/255.0 blue:52.0/255.0 alpha:1]
+#define TextFieldColor [UIColor colorWithRed:160.0/255.0 green:160.0/255.0 blue:160.0/255.0 alpha:1]
+
+#endif /* shenBoShi_Prefix_pch */

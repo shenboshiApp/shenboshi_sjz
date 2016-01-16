@@ -1,0 +1,20 @@
+//
+//  NSString+Extension.h
+//  GSUser
+//
+//  Created by greenstone on 14-12-20.
+//  Copyright (c) 2014年 greenStone. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+
+@interface EMConversation (Extension)
+
+-(EMMessage*)getNewestMessage;
+-(NSArray*)loadAllMessageBySort;
+-(EMMessage *)lastestOtherMessage;
+- (NSArray *)loadAllNotiMessageBySort;
+
+@end

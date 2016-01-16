@@ -1,0 +1,24 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "28eff9ba-d907-4d4a-867b-3941f12c7b74++2659" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "28eff9ba-d907-4d4a-867b-3941f12c7b74++2659" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "78DED640-EAA0-4254-ACF4-7D5A6397CB84",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "28eff9ba-d907-4d4a-867b-3941f12c7b74++2659" : "shenBoShi\/shenBoShi\/Category\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "shenBoShi",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "shenBoShi.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "svn:\/\/svn.green-stone.cn",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "28eff9ba-d907-4d4a-867b-3941f12c7b74++2659"
+    }
+  ]
+}

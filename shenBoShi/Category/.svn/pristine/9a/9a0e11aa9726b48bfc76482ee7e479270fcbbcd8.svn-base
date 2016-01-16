@@ -1,0 +1,23 @@
+//
+//  NSString+Extension.h
+//  GSUser
+//
+//  Created by greenstone on 14-12-20.
+//  Copyright (c) 2014年 greenStone. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+
+@interface EMMessage (Extension)
+
+-(bool)getIsSender;
+-(NSString*)getRealFrom;
+-(NSString*)getDisplayFrom;
+-(NSString *)getDisplayText;
+-(int)getType;
+-(BOOL)isImageMessage;
+-(BOOL)isVoiceMessage;
+
+@end

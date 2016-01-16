@@ -1,0 +1,20 @@
+//
+//  AspectsViewController.h
+//  GreenStoneUser
+//
+//  Created by 志强刁 on 15/5/5.
+//  Copyright (c) 2015年 greenStone. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface AspectsBase : NSObject
+
+-(void)bindEvents;
+
+-(void)unBindEvents;
+
+@property (nonatomic,strong) UIAlertView *currentAlertView;
+@property (nonatomic,assign) BOOL isPushing;
+
+@end

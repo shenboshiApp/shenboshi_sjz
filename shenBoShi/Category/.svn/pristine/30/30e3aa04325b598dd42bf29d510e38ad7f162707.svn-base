@@ -1,0 +1,100 @@
+//
+//  NSString+Extension.m
+//  GSUser
+//
+//  Created by greenstone on 14-12-20.
+//  Copyright (c) 2014年 greenStone. All rights reserved.
+//
+
+#import "EMConversation+Extension.h"
+#import "LSLawyerJsonAnalysis.h"
+#import "EMMessage+Extension.h"
+#import "UserContext.h"
+
+@implementation EMConversation (Extension)
+
+-(NSArray*)loadAllMessageBySort
+{
+    NSArray *messages = [self loadAllMessages];
+    
+    messages = [messages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        
+        EMMessage *msg1 = obj1;
+        EMMessage *msg2 = obj2;
+        
+        NSNumber *number1 = [NSNumber numberWithLongLong:msg1.timestamp];
+        NSNumber *number2 = [NSNumber numberWithLongLong:msg2.timestamp];
+        
+        NSComparisonResult result = [number1 compare:number2];
+        
+        return result == NSOrderedDescending;
+    }];
+
+    return messages;
+}
+- (NSArray *)loadAllNotiMessageBySort{
+    NSArray *messages = [self loadAllMessages];
+    
+    messages = [messages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        
+        EMMessage *msg1 = obj1;
+        EMMessage *msg2 = obj2;
+        
+        NSNumber *number1 = [NSNumber numberWithLongLong:msg1.timestamp];
+        NSNumber *number2 = [NSNumber numberWithLongLong:msg2.timestamp];
+        
+        NSComparisonResult result = [number2 compare:number1];
+        
+        return result == NSOrderedDescending;
+    }];
+    
+    return messages;
+}
+
+-(EMMessage*)getNewestMessage
+{
+//    NSString *key = @"isFromServer";
+//    EMMessage *lastMsg = [self latestMessage];
+//    
+//    if (lastMsg == nil) {
+//        lastMsg = [self getLastMessageBySort];
+//    }
+//    
+//    if (lastMsg.ext != nil) {
+//        id isFromServer = [lastMsg.ext objectForKey:key];
+//        if (isFromServer != nil && [isFromServer integerValue] == 1) {
+//            lastMsg = [self getLastMessageBySort];
+//        }
+//    }
+//    
+//    return lastMsg;
+    return [self latestMessage];
+}
+
+-(EMMessage *)lastestOtherMessage
+{
+    NSArray *messages = [self loadAllMessages];
+    EMMessage *otherMessage = nil;
+    
+    for (int index=messages.count-1; index>=0; index--) {
+        EMMessage *msg = [messages objectAtIndex:index];
+        if (![[msg getRealFrom] isEqualToString:[UserContext current].hUid]) {
+            otherMessage = msg;
+            break;
+        }
+    }
+    
+    return otherMessage;
+}
+
+-(EMMessage *)getLastMessageBySort
+{
+    EMMessage *lastMsg = nil;
+    NSArray *messages = [self loadAllMessageBySort];
+    if (messages != nil && messages.count > 0)
+        lastMsg = [messages objectAtIndex:messages.count-1];
+
+    return lastMsg;
+}
+
+@end
